@@ -19,8 +19,8 @@ class FullyConnect:
 		return self.dw, self.db, self.dx
 
 	def update(self, lr=0.01):
-		self.weights -= lr*self.dw * self.weights
-		self.bias -= lr*self.db * self.bias
+		self.weights -= lr *  self.weights
+		self.bias -= lr * self.bias
 
 		
 
@@ -53,6 +53,7 @@ class Relu:
 	
 def main():
 	fc = FullyConnect(2, 1)
+	#sigmoid = Sigmoid()
 	sigmoid = Relu()
 	x = np.array([[2], [2]])
 	y = [[0.5]]
@@ -69,6 +70,7 @@ def main():
 		error = y2 - y
 		loss = np.sum(np.square(error))
 		d1 = sigmoid.backward(y1, error)
+		#d1 = sigmoid.backward(error)
 		fc.backward(d1)
 		if i % 200:
 			print(loss)
@@ -77,7 +79,7 @@ def main():
 	
 	rlt = sigmoid.forward(fc.forward(x)) 
 
-	print(rlt)
+	print(rlt, i)
 
 
 if __name__=='__main__':
