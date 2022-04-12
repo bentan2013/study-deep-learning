@@ -1,4 +1,4 @@
-import tensorflow as tf
+#https://zhuanlan.zhihu.com/p/95065951
 
 #from tensorflow.compat.v1 import ConfigProto
 #from tensorflow.compat.v1 import InteractiveSession
@@ -19,6 +19,8 @@ import tensorflow as tf
 #os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
+import matplotlib.pyplot as plt
+
 import tensorflow as tf
 gpu_devices = tf.config.experimental.list_physical_devices('GPU')
 for device in gpu_devices:
@@ -38,6 +40,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dropout, Dense
 from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.optimizers import Adadelta
+from tensorflow.keras.utils import plot_model
 
 model = Sequential()
 model.add(Conv2D(32, (5,5), activation='relu', input_shape=[28, 28, 1]))
@@ -49,13 +52,18 @@ model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 
+print(model.summary())
+plot_model(model, to_file='model.png')
+
 model.compile(loss=categorical_crossentropy,
             optimizer=Adadelta(),
             metrics=['accuracy'])
 
+
 batch_size = 100 
 epochs = 10 
-model.fit(train_X, train_y,
+
+history = model.fit(train_X, train_y,
         batch_size=batch_size,
         epochs=epochs)
 
@@ -66,3 +74,7 @@ test_X /= 255
 test_y = to_categorical(test_y, 10)
 loss, accuracy = model.evaluate(test_X, test_y, verbose=1)
 print('loss:%.4f accuracy:%.4f' %(loss, accuracy))
+
+plt.plot(history.history['loss'])
+plt.plot(history.history['accuracy'])
+plt.show()
